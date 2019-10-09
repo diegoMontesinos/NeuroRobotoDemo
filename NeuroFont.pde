@@ -54,33 +54,29 @@ public class NeuroFont {
     }
   }
 
-  public RShape toShape (String txt) {
+  public RShape updateShape (RShape shape) {
+    RShape newShape = new RShape();
 
-    RShape txtShapeSrc = fontSrc.toShape(txt);
-    RShape txtShape    = new RShape();
-
-    int len = txtShapeSrc.countChildren();
+    int len = shape.countChildren();
     for (int i = 0; i < len; i++) {
-
-      RShape srcShape = txtShapeSrc.children[i];
+      RShape srcShape = shape.children[i];
       RPath[] newPaths = new RPath[ srcShape.countPaths() ];
 
       for (int j = 0; j < newPaths.length; j++) {
         newPaths[j] = updatePath(srcShape.paths[j]);
       }
 
-      txtShape.addChild(new RShape(newPaths));
+      newShape.addChild(new RShape(newPaths));
     }
 
-    return txtShape;
+    return newShape;
   }
   
-  public RShape toShape (String txt, float charSize) {
-    float scale = charSize / float(fontSize);
-    RShape txtShape = toShape(txt);
-    txtShape.scale(scale);
+  public RShape updateShape (RShape shape, float charSize) {
+    RShape newShape = updateShape(shape);
+    newShape.scale(charSize / float(fontSize));
     
-    return txtShape;
+    return newShape;
   }
 
   RPath updatePath (RPath path) {
@@ -91,7 +87,8 @@ public class NeuroFont {
     float angleResSin = (PI * 4.5) / path.getWidth();
     float angleResCos = (PI * 4.0) / float(points.length);
 
-    RPoint p; PVector v;
+    RPoint p; 
+    PVector v;
     for (int i = 0; i < points.length; i++) {
       p = points[i];
       v = new PVector(p.x - center.x, p.y - center.y);
@@ -125,7 +122,7 @@ public class NeuroFont {
       RShape shape = shapes[i];
 
       String fileName = folder + "/" + prefix + i + ".svg";
-      shape.translate(shape.getWidth() , shape.getHeight() * 1.5);
+      shape.translate(shape.getWidth(), shape.getHeight() * 1.5);
       RG.saveShape(fileName, shape);
     }
   }

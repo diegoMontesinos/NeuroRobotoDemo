@@ -20,8 +20,8 @@ Demo demo;
 
 void setup () {
   //size(1344, 756);
-  //size(2560, 1440);
-  fullScreen();
+  //size(2560, 1440, P2D);
+  fullScreen(P2D, 1);
   pixelDensity(displayDensity());
   smooth();
 
@@ -33,7 +33,7 @@ void setup () {
   muse = new Muse(5000);
   muse.addListener(new MuseEvents());
   
-  demo = new Demo();
+  demo = new Demo(neuroFont);
   switchColors();
 }
 
@@ -42,14 +42,14 @@ void draw () {
   updateColors();
 
   demo.draw();
+  
+  println(frameRate);
 }
 
 void updateFont () {
   concentration();
   mellow();
   stress();
-
-  neuroFont.update();
 }
 
 void updateColors () {
@@ -80,7 +80,6 @@ void mellow () {
 }
 
 void stress () {
-  float delta = muse.getDelta();
   float theta = muse.getTheta();
   float alpha = muse.getAlpha();
   float beta  = muse.getBeta();
@@ -98,12 +97,6 @@ void switchColors () {
   lerpingColor = true;
   speedColor *= -1.0;
   amtColor = speedColor > 0.0 ? 0.0 : 1.0;
-}
-
-void keyPressed () {
-  if (key == 's' || key == 'S') {
-    saveFrame();
-  }
 }
 
 public class MuseEvents implements MuseListener {

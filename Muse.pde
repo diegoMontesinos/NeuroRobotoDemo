@@ -206,7 +206,7 @@ public class Muse {
     push();
 
     stroke(c);
-    strokeWeight(9.0);
+    strokeWeight(4.0);
     noFill();
 
     beginShape();

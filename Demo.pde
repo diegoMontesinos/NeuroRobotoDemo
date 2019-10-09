@@ -2,28 +2,27 @@
 class Demo {
 
   // Measures
-  float marginLeft = 380;
-  float marginTop = 180;
+  float left = 190;
+  float top = 90;
 
   // Info
-  RGroup infoGroup;
-  String[] infoTxt = {
-    "Intervención experimental de la", 
-    "tipografía Roboto (Google).", 
-    "", 
-    "Un algoritmo modifica la", 
-    "anatomía de cada glifo, usando", 
-    "los niveles de concentración,", 
-    "tranquilidad y estrés de una", 
-    "persona en tiempo real.", 
-    "", 
-    "Las medidas son obtenidas por", 
-    "una diadema con sensores de", 
-    "electroencefalografía", 
-    "", 
-    "Siguiente activación:", 
-    "9/10 13:15hrs"
-  };
+  PFont infoFont, labelFont;
+  String infoTxt =
+    "Intervención experimental de la\n" +
+    "tipografía Roboto (Google).\n" +
+    "\n" +
+    "Un algoritmo modifica la\n" + 
+    "anatomía de cada glifo, usando\n" + 
+    "los niveles de concentración,\n" +
+    "tranquilidad y estrés de una\n" + 
+    "persona en tiempo real.\n" +
+    "\n" +
+    "Las medidas son obtenidas por\n" + 
+    "una diadema con sensores de\n" +
+    "electroencefalografía\n" +
+    "\n" +
+    "Siguiente activación:\n" + 
+    "9/10 13:15hrs";
 
   // Specimen alphabet
   String[] specimenTxt = {
@@ -37,40 +36,35 @@ class Demo {
     "@  #  *  +  -  ¿  ?  ¡  !"
   };
 
-  RShape footerSpecimen, footerData;
-  RShape concen, stress, mellow;
+  // Neuro shapes
+  RShape neuroSrc, robotoSrc;
+  RShape[] specimenRows;
 
-  Demo () {
-    RFont infoFont = new RFont("RobotoMono-Regular.ttf", 66, RFont.LEFT);
-    createInfoGroup(infoFont);
+  Demo (NeuroFont neuroFont) {
 
-    footerSpecimen = infoFont.toShape("Espécimen");
-    footerData = infoFont.toShape("Datos");
-    
-    RFont dataFont = new RFont("RobotoMono-Regular.ttf", 50, RFont.LEFT);
-    concen = dataFont.toShape("Concentracion");
-    stress = dataFont.toShape("Estrés");
-    mellow = dataFont.toShape("Tranquilidad");
+    // Load PFont
+    infoFont  = createFont("RobotoMono-Regular.ttf", 33);
+    labelFont = createFont("RobotoMono-Regular.ttf", 25);
+
+    // Load neuro shapes
+    neuroSrc  = neuroFont.fontSrc.toShape("Neuro");
+    robotoSrc = neuroFont.fontSrc.toShape("Roboto");
+
+    initSpecimenRows(neuroFont.fontSrc);
   }
 
-  void createInfoGroup (RFont infoFont) {
-    infoGroup = new RGroup();
-
-    RShape shape;
-    for (int i = 0; i < infoTxt.length; i++) {
-      shape = infoFont.toShape(infoTxt[i]);
-      shape.translate(0, i * 72);
-      infoGroup.addElement(shape);
+  void initSpecimenRows (RFont fontSrc) {
+    specimenRows = new RShape[ specimenTxt.length ];
+    for (int i = 0; i < specimenTxt.length; i++) {
+      specimenRows[i] = fontSrc.toShape(specimenTxt[i]);
     }
   }
 
   void draw () {
     background(backColor);
 
-    scale(width / 5120.0);
-
     pushMatrix();
-    translate(marginLeft, marginTop);
+    translate(left, top);
 
     displayInfo();
     displaySpecimen();
@@ -89,31 +83,29 @@ class Demo {
   void title () {
     pushMatrix();
 
-    translate(520, 490);
+    RShape neuro = neuroFont.updateShape(neuroSrc, 190);
+    RShape roboto = neuroFont.updateShape(robotoSrc, 190);
+
+    translate(260, 245);
     fill(frontColor);
     noStroke();
 
-    RShape neuro = neuroFont.toShape("Neuro", 380);
-    RShape roboto = neuroFont.toShape("Roboto", 380);
-
     neuro.draw();
-    translate(100, 330);
+    translate(50, 165);
     roboto.draw();
 
     popMatrix();
   }
 
   void info () {
-    pushMatrix();
-
-    translate(70, 1150);
     fill(frontColor);
     noStroke();
-    infoGroup.draw();
 
-    popMatrix();
+    textFont(infoFont);
+    textAlign(LEFT);
+    textLeading(33);
+    text(infoTxt, 35, 575);
   }
-
 
   /* Specimen */
 
@@ -123,26 +115,25 @@ class Demo {
     noFill();
     stroke(frontColor);
     strokeWeight(3.0);
-    rect(1600, 45, 2820, 1550);
+    rect(800, 22, 1410, 775);
 
-    // Footer
-    pushMatrix();
-    translate(1600, 15);
+    // Header
+    textFont(infoFont);
+    textAlign(LEFT);
     fill(frontColor);
     noStroke();
-    footerSpecimen.draw();
-    popMatrix();
+    text("Espécimen", 800, 8);
 
     // Specimen
     pushMatrix();
-    translate(3025, 260);
+    translate(1512, 130);
 
     RShape row;
-    for (int i = 0; i < specimenTxt.length; i++) {
-      row = neuroFont.toShape(specimenTxt[i], 200);
+    for (int i = 0; i < specimenRows.length; i++) {
+      row = neuroFont.updateShape(specimenRows[i], 100);
       row.draw();
 
-      translate(0, 175);
+      translate(0, 88);
     }
 
     popMatrix();
@@ -156,57 +147,56 @@ class Demo {
     noFill();
     stroke(frontColor);
     strokeWeight(3.0);
-    rect(1600, 1720, 2820, 728);
+    rect(800, 860, 1410, 364);
 
-    // Footer
-    pushMatrix();
-    noStroke();
+    // Header
+    textFont(infoFont);
+    textAlign(LEFT);
     fill(frontColor);
-    translate(1600, 1695);
-    footerData.draw();
-    popMatrix();
+    noStroke();
+    text("Data", 800, 848);
 
     // Signals
     fill(frontColor);
     noStroke();
-    rect(1705, 1780, 1883, 608);
-    muse.drawSignals(1735, 1810, 1823, 548);
+    rect(852, 890, 942, 304);
+    muse.drawSignals(868, 905, 912, 274);
 
     // Levels
     pushMatrix();
-    translate(3658, 1780);
+    translate(1829, 890);
 
     // Stress
     float alpha = muse.getAlpha();
     float beta  = muse.getBeta();
     float stressLvl = muse.getStressLevel(alpha, beta);
-    level(0, 30, stressLvl, 2, 7, stress);
-    
+    level(0, 15, stressLvl, 1, 8, "Estrés");
+
     // Mellow
-    level(0, 230, muse.getMellow(), 0, 100, mellow);
-    
+    level(0, 115, muse.getMellow(), 0, 100, "Tranquilidad");
+
     // Concentration
-    level(0, 440, muse.getConcentration(), 0, 100, concen);
+    level(0, 220, muse.getConcentration(), 0, 100, "Concentracion");
 
     popMatrix();
   }
 
-  void level (float x, float y, float val, float min, float max, RShape txt) {
+  void level (float x, float y, float val, float min, float max, String txt) {
 
-    float w = map(val, min, max, 10, 656);
-    
     stroke(frontColor);
     strokeWeight(3.0);
     noFill();
-    rect(x, y, 656, 70);
+    rect(x, y, 328, 35);
 
+    float w = map(val, min, max, 10, 328);
     fill(frontColor);
     noStroke();
-    rect(x, y, w, 70);
-
-    pushMatrix();
-    translate(x, y + 130);
-    txt.draw();
-    popMatrix();
+    rect(x, y, w, 35);
+    
+    fill(frontColor);
+    noStroke();
+    textFont(labelFont);
+    textAlign(LEFT);
+    text(txt, x, y + 65);
   }
 }
