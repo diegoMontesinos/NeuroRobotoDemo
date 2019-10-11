@@ -22,7 +22,7 @@ class Demo {
     "electroencefalografía\n" +
     "\n" +
     "Siguiente activación:\n" + 
-    "9/10 13:15hrs";
+    "12/Octubre 13:00hrs";
 
   // Specimen alphabet
   String[] specimenTxt = {

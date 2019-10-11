@@ -1,6 +1,8 @@
 
 import geomerative.*;
 import oscP5.*;
+import java.util.Calendar;
+
 
 // Two main object
 Muse muse;
@@ -21,9 +23,10 @@ Demo demo;
 void setup () {
   //size(1344, 756);
   //size(2560, 1440, P2D);
-  fullScreen(P2D, 1);
+  fullScreen(P2D, 2);
   pixelDensity(displayDensity());
   smooth();
+  noCursor();
 
   RG.init(this);
 
@@ -42,14 +45,14 @@ void draw () {
   updateColors();
 
   demo.draw();
-  
-  println(frameRate);
 }
 
 void updateFont () {
   concentration();
   mellow();
   stress();
+  
+  neuroFont.update();
 }
 
 void updateColors () {
@@ -97,6 +100,21 @@ void switchColors () {
   lerpingColor = true;
   speedColor *= -1.0;
   amtColor = speedColor > 0.0 ? 0.0 : 1.0;
+}
+
+void keyPressed () {
+  if (key == 'r' || key == 'R') {
+    muse.reset();
+  }
+  if (key == 's' || key == 'S') {
+    neuroFont.save("abierto" + timestamp(), "abierto-");
+  }
+}
+
+// timestamp
+String timestamp() {
+  Calendar now = Calendar.getInstance();
+  return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
 
 public class MuseEvents implements MuseListener {

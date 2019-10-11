@@ -225,6 +225,17 @@ public class Muse {
 
     pop();
   }
+
+  public void reset () {
+    delta = new ArrayList<Float>();
+    theta = new ArrayList<Float>();
+    alpha = new ArrayList<Float>();
+    beta  = new ArrayList<Float>();
+    gamma = new ArrayList<Float>();
+
+    mellow = new ArrayList<Float>();
+    concentration = new ArrayList<Float>();
+  }
 }
 
 public class MuseStatus {
